@@ -55,8 +55,39 @@ export const signup = async (req,res) => {
     }
 };
 
-export const login = (req,res) => {
-    res.send("Login Route");
+export const login = async(req,res) => {
+    const {email, password} = req.body;
+    try {
+        //finding the user using his email
+        const user = await User.findOne({email});
+
+        if(!user){
+            return res.status(400).json({message : "Invalid Credentials"});
+        }
+
+        //if email matches then compare the inp pswd w the hashed one
+        const isPasswordOk = await bcrypt.compare(password,user.password);
+
+        if(!isPasswordOk){
+            return res.status(400).json({message : "Invalid Credentials"});
+        }
+
+        //if everything matches then generate a token
+        generateToken(user._id,res);
+
+        //sending user data back to the client
+        res.status(200).json({
+            _id: user._id,
+            fullName: user.fullName,
+            email: user.email,
+            profilePic: user.profilePic
+        })
+        res.send
+
+    } catch (error) {
+        console.log("Error in login controller", error.message);
+        res.status(500).json({message:"Internal Server Error"});
+    }
 };
 
 export const logout = (req,res) => {
