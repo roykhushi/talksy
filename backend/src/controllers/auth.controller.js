@@ -1,6 +1,7 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import generateToken from "../lib/utils.js";
+import cloudinary from "../lib/cloudinary.js";
 
 export const signup = async (req,res) => {
     const {fullName,email,password} = req.body;
@@ -101,6 +102,34 @@ export const logout = (req,res) => {
     }
 };
 
-export const protectRoute = () => {
-    
+export const updateProfile = async(req,res) => {
+    try {
+        const {profilePic} = req.body;
+        const userId = req.user._id; // we can extract the user id bcz in middleware we're sending the user to the req is the user has been authenticated using the protectRoute middleware
+
+        if(!profilePic){
+            return res.status(400).json({message: "Profile picture is required!"});
+        }
+
+        //uploading the profile pic to the cloudinary bucket 
+        const uploadedResp = await cloudinary.uploader.upload(profilePic);
+        
+        //updating the profile pic of the user in the db
+        const updatedUser = await User.findByIdAndUpdate(userId,{profilePic: uploadedResp.secure_url}, {new : true});
+        //new : true is imp 
+
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        console.log(`Error in updating profile ${error.message}`);
+        return res.status(500).json({message: "Internal Server Error"});
+    }   
 }
+
+export const checkAuth = (req,res) => {
+    try {
+        return res.status(200).json(req.user);
+    } catch (error) {
+        console.log(`Error in check auth controller ${error.message}`);
+        return res.status(500).json({message: "Internal Server Error"});
+    }
+} 
