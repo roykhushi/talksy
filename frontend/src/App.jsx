@@ -1,5 +1,5 @@
 import Navbar from './components/Navbar'
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import HomePage from './pages/HomePage'
 import SignUpPage from './pages/SignUpPage'
 import LoginPage from './pages/LoginPage'
@@ -11,14 +11,14 @@ import {Loader} from "lucide-react";
 
 function App() {
   const {checkAuth, authUser , isCheckingAuth} = useAuthStore();
-
+  const location = useLocation();
   useEffect(() => {
     checkAuth();
   },[]);
 
   console.log(authUser);
 
-  //loading state when the user is being authenticated
+  //loading state when the user is being authenticated or refreshing the page
   if(isCheckingAuth && !authUser){
     return(
       <div className='flex items-center justify-center h-screen'>
@@ -26,9 +26,12 @@ function App() {
       </div>
     )
   }
+
+  const noNavbarRoutes = ['/signup', '/login'];
+  const shouldShowNavbar = !noNavbarRoutes.includes(location.pathname);
   return (
     <div>
-      <Navbar />
+      {shouldShowNavbar && <Navbar />}
 
       <Routes>
         <Route path='/' element={authUser ? <HomePage /> : <Navigate to="/login" />}/>
