@@ -4,7 +4,7 @@ import generateToken from "../lib/utils.js";
 import cloudinary from "../lib/cloudinary.js";
 
 export const signup = async (req,res) => {
-    const {fullName,email,password} = req.body;
+    const {fullName,email,password} = req.body; //getting these info from the frontend 
     try {
         //sign up the user
         //hash their pswd
@@ -15,6 +15,7 @@ export const signup = async (req,res) => {
         if(password.length < 6){
             return res.status(400).json({message : "Password Must be atleast 6 characters!"});
         }
+        //finding existing user in db
         const user = await User.findOne({email});
 
         if(user){
@@ -48,8 +49,6 @@ export const signup = async (req,res) => {
             return res.status(400).json({message : "Invalid User Data!"});
         }
 
-        
-        
     } catch (error) {
         console.log("Error in signup controller", error.message);
         res.status(500).json({message : "Internal Server Error"}); 
@@ -125,7 +124,7 @@ export const updateProfile = async(req,res) => {
     }   
 }
 
-export const checkAuth = (req,res) => {
+export const checkAuth = (req,res) => { //to check user is authenticated or not
     try {
         return res.status(200).json(req.user);
     } catch (error) {

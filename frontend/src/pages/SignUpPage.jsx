@@ -10,6 +10,8 @@ import {
   User,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
+
 
 
 const SignUpPage = () => {
@@ -21,10 +23,47 @@ const SignUpPage = () => {
     password: "",
   });
 
-  const validatForm = () => {};
+  const validateForm = () => {
+    if(!formData.fullName.trim() && !formData.email.trim() && !formData.password){
+      toast.error("All fields are necessary!");
+      return false;
+    }
+    if(!formData.fullName.trim()){
+      toast.error("Name is required!");
+      return false;
+    }
+    if(!formData.email.trim()){
+      toast.error("Email is required!");
+      return false;
+    }
+    // const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    // if(emailRegex.test(formData.email)){
+    //   toast.error("Invalid Email Format!");
+    //   return false;
+    // }
+    if(!formData.password){
+      toast.error("Password is required!");
+      return false;
+    }
+    if(formData.password.length < 6){
+      toast.error("Password must be atleast 6 characters!");
+      return false;
+    }
+    return true;
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const success = validateForm();
+
+    if(!success){
+      return;
+    }
+
+    if(success){
+      signUp(formData);
+    }
   };
 
   return (
@@ -130,7 +169,7 @@ const SignUpPage = () => {
               {isSigningUp ? (
                 <>
                   <Loader2 className="size-5 animate-spin" />
-                  Signing In...
+                  Signing Up...
                 </>
               ) : (
                 "Create Account"

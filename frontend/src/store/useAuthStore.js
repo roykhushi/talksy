@@ -1,5 +1,7 @@
 import {create} from "zustand";
 import { axiosInstance } from "../lib/axios";
+import toast from "react-hot-toast";
+import axios from "axios";
 
 export const useAuthStore = create((set) => ({
     //checking if the user is authenticated or not for eg upon refreshing
@@ -24,8 +26,43 @@ export const useAuthStore = create((set) => ({
     },
 
     signUp: async(data) =>{
-
+        set({isSigningUp : true});
+        try {
+            const res = await axiosInstance.post("/auth/signup", data); //sending the data from user back to backend
+            set({authUser : res.data}); 
+            toast.success("Account Created Successfully!");
+        } catch (error) {
+            toast.error(error.response.data.message);
+        }
+        finally{
+            set({isSigningUp: false});
+        }
     },
+
+    logout : async() =>{
+        try {
+            await axiosInstance.post("/auth/logout");
+            set({authUser:null});
+            toast.success("Logged out Successfully!");
+        } catch (error) {
+            toast.error("Some error occurred while logging out!");
+        }
+        
+    },
+
+    signIn : async(data) => {
+        set({isLoggedIn: true});
+        try {
+            const res = await axiosInstance.post("/auth/login",data);
+            set({authUser: res.data});
+            toast.success("Logged in successfully!");
+        } catch (error) {
+            toast.error("Invalid Credentials!");
+        }
+        finally{
+            set({isLoggedIn: false});
+        }
+    }
 
 
 }));
