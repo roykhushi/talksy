@@ -10,7 +10,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT;
 
-app.use(express.json()); //it will extract the contents of the body in json format
+app.use(express.json({ limit: '50mb' })); //it will extract the contents of the body in json format
 app.use(cookieParser()); //parsing the cookie to extract the jwt
 app.use(cors({
     origin: "http://localhost:5173",

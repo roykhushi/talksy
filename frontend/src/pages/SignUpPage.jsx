@@ -153,9 +153,9 @@ const SignUpPage = () => {
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? (
-                    <EyeOff className="size-5 text-base-content/40" />
-                  ) : (
                     <Eye className="size-5 text-base-content/40" />
+                  ) : (
+                    <EyeOff className="size-5 text-base-content/40" />
                   )}
                 </button>
               </div>
@@ -169,7 +169,7 @@ const SignUpPage = () => {
               {isSigningUp ? (
                 <>
                   <Loader2 className="size-5 animate-spin" />
-                  Signing Up...
+                  Creating Account...
                 </>
               ) : (
                 "Create Account"

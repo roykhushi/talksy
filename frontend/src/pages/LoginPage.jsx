@@ -1,6 +1,45 @@
-import React from 'react'
+import { Eye, EyeOff,Loader2, LockIcon, Mail, MessageSquare } from 'lucide-react'
+import React, { useState } from 'react'
+import { useAuthStore } from '../store/useAuthStore';
+import toast from "react-hot-toast";
+import { Link } from "react-router-dom";
 
 const LoginPage = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  const {signIn,isLoggedIn} = useAuthStore();
+  const [formData, setFormData] = useState({
+    email: "",
+    password:""
+  });
+
+  const validate = () => {
+    if(!formData.email.trim() && !formData.password){
+      toast.error("All fields are necessary!");
+      return false;
+    }
+    if(!formData.email.trim()){
+      toast.error("Email is required!");
+      return false;
+    }
+    if(!formData.password){
+      toast.error("Password is required!");
+      return false;
+    }
+
+    return true;
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const success = validate();
+
+    if(success){
+      signIn(formData);
+    }
+  }
+
+  
   return (
     <div className="min-h-screen grid lg:grid-cols-2">
       {/* left side */}
@@ -20,26 +59,7 @@ const LoginPage = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Name */}
-            <div className="form-control">
-              <label className="label">
-                <span className="label-text font-medium">Full Name</span>
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <User className="size-5 text-base-content/40" />
-                </div>
-                <input
-                  type="text"
-                  className={`input input-bordered w-full pl-10`}
-                  placeholder="Khushi Roy"
-                  value={formData.fullName}
-                  onChange={(e) =>
-                    setFormData({ ...formData, fullName: e.target.value })
-                  }
-                />
-              </div>
-            </div>
+            
 
             {/* email */}
 
@@ -71,7 +91,7 @@ const LoginPage = () => {
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="size-5 text-base-content/40" />
+                  <LockIcon className="size-5 text-base-content/40" />
                 </div>
                 <input
                   type={showPassword ? "text" : "password"}
@@ -88,9 +108,9 @@ const LoginPage = () => {
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? (
-                    <EyeOff className="size-5 text-base-content/40" />
-                  ) : (
                     <Eye className="size-5 text-base-content/40" />
+                  ) : (
+                    <EyeOff className="size-5 text-base-content/40" />
                   )}
                 </button>
               </div>
@@ -99,12 +119,12 @@ const LoginPage = () => {
             <button
               type="submit"
               className="btn btn-primary w-full"
-              disabled={isSigningUp}
+              disabled={isLoggedIn}
             >
-              {isSigningUp ? (
+              {isLoggedIn ? (
                 <>
                   <Loader2 className="size-5 animate-spin" />
-                  Signing In...
+                  Logging  In...
                 </>
               ) : (
                 "Sign In"
@@ -112,11 +132,10 @@ const LoginPage = () => {
             </button>
           </form>
           {/* link */}
-
-          <div className="text-center">
-            <p className="text-base-content/60">
+          <div className='text-center'>
+            <p className='text-base-content/60'>
               Do not have an account?{" "}
-              <Link to="/signup" className="link link-primary">
+              <Link to="/signup" className='link link-primary'>
                 Sign Up
               </Link>
             </p>
