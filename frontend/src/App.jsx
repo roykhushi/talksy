@@ -9,9 +9,11 @@ import { useAuthStore } from './store/useAuthStore'
 import { useEffect } from 'react'
 import {Loader} from "lucide-react";
 import {Toaster} from "react-hot-toast";
+import { useThemeStore } from './store/useThemeStore'
 
 function App() {
   const {checkAuth, authUser , isCheckingAuth} = useAuthStore();
+  const {theme} = useThemeStore();
   const location = useLocation();
   useEffect(() => {
     checkAuth();
@@ -31,7 +33,7 @@ function App() {
   const noNavbarRoutes = ['/signup', '/login'];
   const shouldShowNavbar = !noNavbarRoutes.includes(location.pathname);
   return (
-    <div>
+    <div data-theme={theme}>
       {shouldShowNavbar && <Navbar />}
 
       <Routes>
