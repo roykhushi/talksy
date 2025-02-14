@@ -1,7 +1,6 @@
 import {create} from "zustand";
 import { axiosInstance } from "../lib/axios";
 import toast from "react-hot-toast";
-import axios from "axios";
 
 export const useAuthStore = create((set) => ({
     //checking if the user is authenticated or not for eg upon refreshing
@@ -11,6 +10,7 @@ export const useAuthStore = create((set) => ({
     isLoggedIn: false,
     isUpdatingProfile: false,
     isCheckingAuth: true,
+    onlineUsers : [],
 
     checkAuth: async() =>{
         try {

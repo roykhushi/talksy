@@ -116,13 +116,12 @@ export const updateProfile = async(req,res) => {
         //updating the profile pic of the user in the db
         const updatedUser = await User.findByIdAndUpdate(userId,{profilePic: uploadedResp.secure_url}, {new : true});
         //new : true is imp 
-
         res.status(200).json(updatedUser);
     } catch (error) {
         console.log(`Error in updating profile ${error.message}`);
         return res.status(500).json({message: "Internal Server Error"});
     }   
-}
+};
 
 export const checkAuth = (req,res) => { //to check user is authenticated or not
     try {
@@ -131,4 +130,4 @@ export const checkAuth = (req,res) => { //to check user is authenticated or not
         console.log(`Error in check auth controller ${error.message}`);
         return res.status(500).json({message: "Internal Server Error"});
     }
-} 
+}; 
