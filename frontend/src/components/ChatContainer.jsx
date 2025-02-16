@@ -24,8 +24,12 @@ const ChatContainer = () => {
     );
   }
   return (
-    <div>
-      
+    <div className="flex-1 flex flex-col overflow-auto">
+        <ChatHeader />
+
+        <MessageSkeleton />
+
+        <MessageInput />
     </div>
   );
 };
