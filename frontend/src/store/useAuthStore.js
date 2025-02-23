@@ -1,8 +1,11 @@
 import {create} from "zustand";
 import { axiosInstance } from "../lib/axios";
 import toast from "react-hot-toast";
+import {io} from "socket.io-client";
 
-export const useAuthStore = create((set) => ({
+const BASE_URL = "http://localhost:8080";
+
+export const useAuthStore = create((set,get) => ({
     //checking if the user is authenticated or not for eg upon refreshing
     authUser : null,
     //loading states
@@ -11,11 +14,13 @@ export const useAuthStore = create((set) => ({
     isUpdatingProfile: false,
     isCheckingAuth: true,
     onlineUsers : [],
+    socket: null,
 
     checkAuth: async() =>{
         try {
             const res = await axiosInstance.get("/auth/check");
             set({authUser: res.data});
+            get().connectSocket();
         } catch (error) {
             console.log(`error in zustand store for checking auth ${error.message}`);
             set({authUser:null});
@@ -31,6 +36,7 @@ export const useAuthStore = create((set) => ({
             const res = await axiosInstance.post("/auth/signup", data); //sending the data from user back to backend
             set({authUser : res.data}); 
             toast.success("Account Created Successfully!");
+            get().connectSocket();
         } catch (error) {
             toast.error(error.response.data.message);
         }
@@ -44,6 +50,7 @@ export const useAuthStore = create((set) => ({
             await axiosInstance.post("/auth/logout");
             set({authUser:null});
             toast.success("Logged out Successfully!");
+            get().disconnectSocket();
         } catch (error) {
             toast.error("Some error occurred while logging out!");
         }
@@ -56,6 +63,8 @@ export const useAuthStore = create((set) => ({
             const res = await axiosInstance.post("/auth/login",data);
             set({authUser: res.data});
             toast.success("Logged in successfully!");
+
+            get().connectSocket(); //connecting to the socket io server as soon as we login
         } catch (error) {
             toast.error("Invalid Credentials!");
         }
@@ -77,7 +86,31 @@ export const useAuthStore = create((set) => ({
         finally{
             set({isUpdatingProfile : false});
         }
-    }
+    },
 
+    connectSocket : () => {
+        const {authUser} = get();
+        if(!authUser || get().socket?.connected){
+            return;
+        }
+        const socket = io(BASE_URL, {
+            query: {
+                userId: authUser._id, //id of user getting from mongodb
+            }
+        });
+        socket.connect();
+
+        set({socket: socket});
+
+        socket.on("getOnlineUsers", (userIds) => {
+            set({onlineUsers: userIds})
+        })
+
+    },
+    disconnectSocket : () => {
+        if(get().socket?.connected){
+            get().socket.disconnect();
+        }
+    }
 
 }));

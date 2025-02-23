@@ -12,7 +12,7 @@ import {Toaster} from "react-hot-toast";
 import { useThemeStore } from './store/useThemeStore'
 
 function App() {
-  const {checkAuth, authUser , isCheckingAuth} = useAuthStore();
+  const {checkAuth, authUser , isCheckingAuth, onlineUsers} = useAuthStore();
   const {theme} = useThemeStore();
   const location = useLocation();
   useEffect(() => {
@@ -20,6 +20,8 @@ function App() {
   },[]);
 
   console.log(authUser);
+
+  console.log(onlineUsers);
 
   //loading state when the user is being authenticated or refreshing the page
   if(isCheckingAuth && !authUser){

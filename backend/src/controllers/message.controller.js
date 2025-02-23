@@ -1,7 +1,8 @@
 import cloudinary from "../lib/cloudinary.js";
+import { sendSocketIdOfUser } from "../lib/socket.js";
 import Message from "../models/message.model.js";
 import User from "../models/user.model.js";
-
+import { io } from "../lib/socket.js";
 //this func will find all the users except the loggedIn user in the side bar of the application
 export const getUsersForSidebar = async(req,res) => {   
     try {
@@ -60,7 +61,13 @@ export const sendMessage = async(req,res) => {
         });
 
         //save this msg in db
-        newMessage.save();
+        await newMessage.save();
+
+        const socketIdofReceiver = sendSocketIdOfUser(receiverId);
+
+        if(sendSocketIdOfUser){
+            io.to(socketIdofReceiver).emit("newMessage",newMessage); //sending 1v1 msg to the receiver
+        }
 
         res.status(201).json(newMessage);
     } catch (error) {
