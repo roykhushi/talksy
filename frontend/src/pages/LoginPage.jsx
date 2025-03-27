@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { useAuthStore } from '../store/useAuthStore';
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
+import loginImage from "../../public/login.png";
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -51,9 +52,9 @@ const LoginPage = () => {
               <div className="size-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
                 <MessageSquare className="size-6 text-primary" />
               </div>
-              <h1 className="text-2xl font-bold mt-2">Create Account</h1>
+              <h1 className="text-2xl font-bold mt-2">Welcome Back</h1>
               <p className="text-base-content/60">
-                Get started with your free account
+                Enter your account details
               </p>
             </div>
           </div>
@@ -144,6 +145,12 @@ const LoginPage = () => {
       </div>
 
       {/* right side */}
+
+      <div className='w-full h-full min-h-screen object-cover overflow-hidden'>
+      <img src={loginImage} alt="login-img" />
+      </div>
+
+
       
     </div>
   )
