@@ -128,3 +128,4 @@ Contributions are always welcome! Please follow these steps:
 - [Tailwind CSS](https://tailwindcss.com/)
 - [DaisyUI](https://daisyui.com/)
 - [Cloudinary](https://cloudinary.com/)
+- [storyset](https://storyset.com/people)
