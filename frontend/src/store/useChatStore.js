@@ -69,5 +69,27 @@ export const useChatStore = create((set, get) => ({
     socket.off("newMessage");
   },
 
+  listenToNewUsers: () => {
+    const socket = useAuthStore.getState().socket;
+    if (!socket){
+      return;
+    };
+
+    socket.on("newUser", (newUser) => {
+      const currentUsers = get().users;
+      // Only add if user isn't already in the list
+      if (!currentUsers.find((user) => user._id === newUser._id)) {
+        set({ users: [...currentUsers, newUser] });
+      }
+    });
+  },
+
+  cleanup: () => {
+    const socket = useAuthStore.getState().socket;
+    if (socket) {
+      socket.off("newUser");
+    }
+  },
+
   setSelectedUser: (selectedUser) => set({ selectedUser }),
 }));

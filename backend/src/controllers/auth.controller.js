@@ -2,6 +2,7 @@ import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import generateToken from "../lib/utils.js";
 import cloudinary from "../lib/cloudinary.js";
+import {io} from "../lib/socket.js";
 
 export const signup = async (req,res) => {
     const {fullName,email,password} = req.body; //getting these info from the frontend 
@@ -37,7 +38,14 @@ export const signup = async (req,res) => {
         if(newUser){
             //generate jwt token
             generateToken(newUser._id,res);
-            newUser.save();
+            await newUser.save();
+
+            io.emit("newUser", { //if new user added then emit this event to all the other users and no need to reload 
+                _id: newUser._id,
+                fullName: newUser.fullName,
+                email: newUser.email,
+                profilePic: newUser.profilePic
+            });
 
             res.status(201).json({
                 _id: newUser._id,

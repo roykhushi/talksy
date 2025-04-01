@@ -6,7 +6,7 @@ import { useAuthStore } from "../store/useAuthStore";
 import defaultAvatar from "../../public/avatar1.png";
 
 const Sidebar = () => {
-  const { getUsers, users, setSelectedUser, selectedUser, isUsersLoading } = useChatStore();
+  const { getUsers, users, setSelectedUser, selectedUser, isUsersLoading, listenToNewUsers, cleanup } = useChatStore();
 
   const {onlineUsers} = useAuthStore();
 
@@ -17,7 +17,10 @@ const Sidebar = () => {
 
   useEffect(() => {
     getUsers();
-  }, [getUsers]);
+    listenToNewUsers();
+
+    return () => cleanup(); 
+  }, [getUsers, listenToNewUsers, cleanup]);
 
   if (isUsersLoading) {
     return <SidebarSkeleton />;
