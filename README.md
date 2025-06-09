@@ -2,8 +2,6 @@
 
 Talksy is a modern real-time chat application built with the MERN stack (MongoDB, Express.js, React.js, Node.js) and Socket.IO for real-time communication. The app features a clean UI with theme customization, user authentication, real-time messaging, image sharing, and online/offline user status.
 
-![Talksy Screenshot]
-
 ## Features
 
 - User authentication with JWT
